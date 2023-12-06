@@ -22,12 +22,15 @@ const Modal = ({ isOpen, onClose, onAddPost, onSave, existingPost }) => {
         image: '',
         content: '',
         tags: [],
-        published: true,
+        published: false,
     });
 
     const Change = (e) => {
         const { name, value, type, checked } = e.target;
-        if (type === "checkbox") {
+
+        if (name === "published" && checked) {
+            alert('Stai per pubblicare questo articolo.');
+        } if (type === "checkbox") {
             setNewPost({ ...newPost, [name]: checked });
         } else {
             setNewPost({ ...newPost, [name]: value });
@@ -72,13 +75,10 @@ const Modal = ({ isOpen, onClose, onAddPost, onSave, existingPost }) => {
                 image: '',
                 content: '',
                 /*   tags: '', */
-                published: true,
+                published: false,
             });
         }
     }, [existingPost]);
-
-
-
 
 
     if (!isOpen) return null;

@@ -24,7 +24,8 @@ function App() {
 
   const deletePost = (postId) => {
     const updatedPosts = posts.filter(post => post.id !== postId);
-    setPosts(updatedPosts);
+    if (window.confirm('Sei sicuro di voler eliminare questo post?'))
+      setPosts(updatedPosts);
 
   };
 
