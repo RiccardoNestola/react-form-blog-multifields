@@ -55,7 +55,6 @@ function App() {
 
         <Modal isOpen={isModalOpen} onClose={() => { setModalOpen(false); setPostToEdit(null); }} onAddPost={addPost} onSave={editPost} existingPost={postToEdit} />
 
-
         <CardList posts={posts} onDeletePost={deletePost} onEditPost={openEditModal} />
       </main>
 

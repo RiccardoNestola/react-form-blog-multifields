@@ -3,6 +3,20 @@ import React, { useState, useEffect } from 'react';
 
 const Modal = ({ isOpen, onClose, onAddPost, onSave, existingPost }) => {
 
+    const allTags = ['html', 'css', 'js', 'php'];
+    const [selectedTags, setSelectedTags] = useState([]);
+
+
+    const ChangeTag = (tag, isChecked) => {
+        if (isChecked) {
+            setSelectedTags([...selectedTags, tag]);
+        } else {
+            setSelectedTags(selectedTags.filter(t => t !== tag));
+        }
+    };
+
+
+
     const [newPost, setNewPost] = useState({
         title: '',
         image: '',
@@ -22,12 +36,12 @@ const Modal = ({ isOpen, onClose, onAddPost, onSave, existingPost }) => {
 
     const Submit = (e) => {
         e.preventDefault();
-        if (!newPost.title || !newPost.image || !newPost.content || !newPost.tags) {
+        if (!newPost.title || !newPost.image || !newPost.content) {
             alert('Compila tutti i campi');
             return;
         }
-        const tagsArray = newPost.tags.split(',').map(tag => tag.trim());
-        const postData = { ...newPost, tags: tagsArray };
+        /* const tagsArray = newPost.tags.split(',').map(tag => tag.trim()); */
+        const postData = { ...newPost, tags: selectedTags };
 
         if (existingPost) {
             onSave(existingPost.id, postData);
@@ -42,20 +56,22 @@ const Modal = ({ isOpen, onClose, onAddPost, onSave, existingPost }) => {
     useEffect(() => {
         /* console.log(existingPost); */
         if (existingPost) {
+            setSelectedTags(existingPost.tags);
             setNewPost({
                 title: existingPost.title || '',
                 image: existingPost.image || '',
                 content: existingPost.content || '',
-                tags: Array.isArray(existingPost.tags) ? existingPost.tags.join(', ') : '',
+                /*  tags: Array.isArray(existingPost.tags) ? existingPost.tags.join(', ') : '', */
                 published: existingPost.hasOwnProperty('published') ? existingPost.published : true,
             });
         } else {
             /*  console.log(existingPost); */
+            setSelectedTags([]);
             setNewPost({
                 title: '',
                 image: '',
                 content: '',
-                tags: '',
+                /*   tags: '', */
                 published: true,
             });
         }
@@ -88,13 +104,23 @@ const Modal = ({ isOpen, onClose, onAddPost, onSave, existingPost }) => {
                     </div>
 
                     <div>
-                        <label htmlFor="tags" className="block text-sm font-medium text-gray-700">Tags</label>
-                        <p className="text-sm text-gray-500 mt-2">Separare i tags con una virgola, puoi aggiungere solo questi:</p>
-                        <li className="text-sm text-gray-500 mt-2">html</li>
-                        <li className="text-sm text-gray-500">css</li>
-                        <li className="text-sm text-gray-500">js</li>
-                        <li className="text-sm text-gray-500 mb-2">php</li>
-                        <input type="text" id="tags" name="tags" value={newPost.tags} onChange={Change} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-gray-500 focus:border-gray-500" />
+                        <div>
+                            <label htmlFor="content" className="block text-sm font-medium text-gray-700 pb-2">Seleziona i Tags</label>
+                            <div className="flex flex-wrap gap-2">
+                                {allTags.map(tag => (
+                                    <label key={tag} className="flex items-center text-sm font-medium text-gray-700 my-2">
+                                        <input
+                                            type="checkbox"
+                                            className='h-4 w-4 accent-gray-500 focus:ring-gray-500 border-gray-300 rounded mr-2'
+                                            checked={selectedTags.includes(tag)}
+                                            onChange={(e) => ChangeTag(tag, e.target.checked)}
+                                        />
+                                        {tag.toLocaleUpperCase()}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
                     </div>
 
                     <div className="flex items-center">
